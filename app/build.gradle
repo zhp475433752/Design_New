@@ -1,0 +1,71 @@
+apply plugin: 'com.android.application'
+
+android {
+    // 数字签名证书以及密钥文件的配置
+    // 可以在之后的打包，不同渠道进行设置和使用
+    signingConfigs {
+        mykeystore {
+            keyAlias 'my_release_key'
+            keyPassword '123456'
+            storeFile file('../release.jks')
+            storePassword '123456'
+        }
+    }
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+    defaultConfig {
+        applicationId "com.example.hpzhang.design_new"
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            // 编译类型 release 的时候，minifyEnabled = true
+            // 进行 ProGuard混淆
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.mykeystore
+        }
+    }
+    // 编译不做检查
+    lintOptions {
+        abortOnError false
+    }
+    // 配置软件包打包的时候，准备的不同的渠道，例如收费版和免费版
+    productFlavors {
+        // 渠道的名称，这个名称最终会进行不同的打包
+        // 默认的配置，使用defaultConfig，属于增量修改
+        baiduMarket {
+            minSdkVersion 10
+            applicationId 'com.baidu.hpzhang.design_new'
+        }
+
+        // 可以添加多个不同的渠道
+        qihoo {
+            minSdkVersion 10
+            applicationId 'com.qihoo.hpzhang.design_new'
+        }
+
+        // 收费版
+        paid{
+            minSdkVersion 10
+            applicationId 'com.qf.gradle.paid'
+
+        }
+
+        // 免费版
+        free{
+            minSdkVersion 10
+            applicationId 'com.qf.gradle.free'
+
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:design:23.1.1'
+}
